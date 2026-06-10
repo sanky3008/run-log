@@ -1,26 +1,109 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* DMG-01 LCD shades */
+  --color-gb-darkest: #0f380f;
+  --color-gb-dark: #306230;
+  --color-gb-mid: #8bac0f;
+  --color-gb-light: #9bbc0f;
+  --color-gb-pale: #c4d486;
+  /* shell + signal accents (GBC cartridge palette) */
+  --color-bezel: #23231f;
+  --color-bezel-deep: #161613;
+  --color-led: #d62828;
+  --color-hp-green: #2fbf4f;
+  --color-hp-yellow: #e8c11c;
+  --color-hp-red: #e3393c;
+  --color-zone3: #e8c11c;
+  --color-zone4: #ea8a2a;
+  --color-zone5: #e3393c;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-pixel: var(--font-press-start);
+  --font-body: var(--font-vt323);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(ellipse at 50% -20%, #2e2e29 0%, transparent 60%),
+    var(--color-bezel-deep);
+  color: var(--color-gb-darkest);
+  font-family: var(--font-body), monospace;
+  font-size: 1.25rem;
+  line-height: 1.35;
+}
+
+/* ── pixel-art building blocks ─────────────────────────────── */
+
+/* stepped 8-bit border: corners cut by offset shadows */
+.pixel-panel {
+  background: var(--color-gb-light);
+  box-shadow:
+    0 -4px 0 0 var(--color-gb-darkest),
+    0 4px 0 0 var(--color-gb-darkest),
+    -4px 0 0 0 var(--color-gb-darkest),
+    4px 0 0 0 var(--color-gb-darkest);
+  margin: 4px;
+}
+
+.pixel-panel--dark {
+  background: var(--color-gb-darkest);
+  color: var(--color-gb-light);
+  box-shadow:
+    0 -4px 0 0 var(--color-gb-darkest),
+    0 4px 0 0 var(--color-gb-darkest),
+    -4px 0 0 0 var(--color-gb-darkest),
+    4px 0 0 0 var(--color-gb-darkest),
+    inset 0 0 0 2px var(--color-gb-light);
+}
+
+/* dot-matrix LCD texture for the screen surface */
+.lcd {
+  background-color: var(--color-gb-light);
+  background-image:
+    linear-gradient(rgba(15, 56, 15, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 56, 15, 0.08) 1px, transparent 1px);
+  background-size: 4px 4px;
+  image-rendering: pixelated;
+}
+
+.font-pixel {
+  font-family: var(--font-pixel), monospace;
+}
+
+/* blinking ▼ continue-cursor from the battle dialogs */
+@keyframes blink-cursor {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.blink {
+  animation: blink-cursor 1.1s steps(1) infinite;
+}
+
+/* power LED glow */
+@keyframes led-breathe {
+  0%, 100% { box-shadow: 0 0 6px 1px rgba(214, 40, 40, 0.8); }
+  50% { box-shadow: 0 0 10px 3px rgba(214, 40, 40, 0.45); }
+}
+.led {
+  animation: led-breathe 2.4s ease-in-out infinite;
+}
+
+/* staggered 8-bit reveal on page load */
+@keyframes pixel-pop {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.pop { animation: pixel-pop 0.28s steps(4) both; }
+.pop-1 { animation-delay: 0.06s; }
+.pop-2 { animation-delay: 0.16s; }
+.pop-3 { animation-delay: 0.26s; }
+.pop-4 { animation-delay: 0.36s; }
+
+svg {
+  shape-rendering: crispEdges;
+}
+
+::selection {
+  background: var(--color-gb-darkest);
+  color: var(--color-gb-light);
 }
