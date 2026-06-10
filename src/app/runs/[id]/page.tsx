@@ -19,7 +19,7 @@ export default async function RunPage({ params }: { params: Promise<{ id: string
 
   return (
     <div className="flex flex-col gap-3 pop">
-      <Link href="/" className="font-pixel text-[9px] hover:bg-gb-darkest hover:text-gb-light w-fit px-1">
+      <Link href="/" className="font-pixel text-[9px] hover:bg-ink hover:text-paper w-fit px-1">
         ◀ BACK
       </Link>
       <EncounterCard ctx={ctx} full />

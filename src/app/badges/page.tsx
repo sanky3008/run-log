@@ -11,7 +11,7 @@ export default async function BadgesPage() {
     <div className="flex flex-col gap-4">
       <section className="pixel-panel--dark m-1 px-4 py-2 pop">
         <p className="font-pixel text-[10px]">
-          GYM BADGES · {badges.filter((b) => b.earned).length}/{badges.length} EARNED
+          PERSONAL RECORDS · {badges.filter((b) => b.earned).length}/{badges.length} EARNED
         </p>
       </section>
 
@@ -24,12 +24,12 @@ export default async function BadgesPage() {
               </span>
               <div className="min-w-0">
                 <h3 className="font-pixel text-[10px]">{badge.name.toUpperCase()}</h3>
-                <p className="text-lg text-gb-dark leading-tight">{badge.description}</p>
+                <p className="text-lg text-ink-soft leading-tight">{badge.description}</p>
               </div>
             </div>
-            <div className="mt-3 flex items-baseline justify-between border-t-2 border-dotted border-gb-dark/50 pt-2">
+            <div className="mt-3 flex items-baseline justify-between border-t-2 border-dotted border-ink-soft/50 pt-2">
               <span className="text-2xl tabular-nums">{badge.value}</span>
-              <span className="text-base text-gb-dark">{badge.date ?? ""}</span>
+              <span className="text-base text-ink-soft">{badge.date ?? ""}</span>
             </div>
           </section>
         ))}

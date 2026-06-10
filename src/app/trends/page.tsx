@@ -18,7 +18,7 @@ const TIER_COLOR: Record<string, string> = {
   green: "var(--color-hp-green)",
   yellow: "var(--color-hp-yellow)",
   red: "var(--color-hp-red)",
-  unknown: "var(--color-gb-dark)",
+  unknown: "var(--color-ink-soft)",
 };
 
 function shortDate(localDate: string): string {
@@ -73,7 +73,7 @@ export default async function TrendsPage() {
       </section>
 
       <section className="pixel-panel p-4 pop pop-2">
-        <h3 className="font-pixel text-[10px] mb-2">STRAIN (XP) PER RUN</h3>
+        <h3 className="font-pixel text-[10px] mb-2">STRAIN PER RUN</h3>
         <StepLine
           values={runs.slice(-20).map((r) => r.strain ?? 0)}
           labels={runs.slice(-20).map((r) => shortDate(r.localDate))}
@@ -94,11 +94,12 @@ export default async function TrendsPage() {
         <h3 className="font-pixel text-[10px] mb-2">READINESS VS PACE</h3>
         <ScatterPlot
           points={scatterPoints}
-          xLabel="morning recovery"
-          yLabel="pace s/km"
+          xLabel="morning recovery score"
+          yLabel="pace"
+          xDomain={[0, 100]}
           formatY={(v) => formatPace(v)}
         />
-        <p className="mt-1 text-lg text-gb-dark">
+        <p className="mt-1 text-lg text-ink-soft">
           {r !== null
             ? `Correlation r = ${r.toFixed(2)} across ${scatterPoints.length} runs ${
                 r < -0.3 ? "— better recovery, faster pace!" : r > 0.3 ? "— slower when recovered (easy days?)" : "— no strong pattern yet"

@@ -1,16 +1,19 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* DMG-01 LCD shades */
-  --color-gb-darkest: #0f380f;
-  --color-gb-dark: #306230;
-  --color-gb-mid: #8bac0f;
-  --color-gb-light: #9bbc0f;
-  --color-gb-pale: #c4d486;
-  /* shell + signal accents (GBC cartridge palette) */
-  --color-bezel: #23231f;
-  --color-bezel-deep: #161613;
-  --color-led: #d62828;
+  /* Nintendo DS-era Pokémon menu palette: cream paper, navy ink, colored accents */
+  --color-paper: #f8f1dc;
+  --color-paper-deep: #ece1c2;
+  --color-ink: #3a3552;
+  --color-ink-soft: #6e6884;
+  --color-blue: #4f8fd0;
+  --color-red: #e2574c;
+  --color-gold: #e8a33d;
+  /* hardware shell */
+  --color-bezel: #2b2733;
+  --color-bezel-deep: #1c1922;
+  --color-led: #50c878;
+  /* signal colors */
   --color-hp-green: #2fbf4f;
   --color-hp-yellow: #e8c11c;
   --color-hp-red: #e3393c;
@@ -24,9 +27,9 @@
 
 body {
   background:
-    radial-gradient(ellipse at 50% -20%, #2e2e29 0%, transparent 60%),
+    radial-gradient(ellipse at 50% -20%, #3d3749 0%, transparent 60%),
     var(--color-bezel-deep);
-  color: var(--color-gb-darkest);
+  color: var(--color-ink);
   font-family: var(--font-body), monospace;
   font-size: 1.25rem;
   line-height: 1.35;
@@ -36,32 +39,32 @@ body {
 
 /* stepped 8-bit border: corners cut by offset shadows */
 .pixel-panel {
-  background: var(--color-gb-light);
+  background: #fffaf0;
   box-shadow:
-    0 -4px 0 0 var(--color-gb-darkest),
-    0 4px 0 0 var(--color-gb-darkest),
-    -4px 0 0 0 var(--color-gb-darkest),
-    4px 0 0 0 var(--color-gb-darkest);
+    0 -4px 0 0 var(--color-ink),
+    0 4px 0 0 var(--color-ink),
+    -4px 0 0 0 var(--color-ink),
+    4px 0 0 0 var(--color-ink);
   margin: 4px;
 }
 
 .pixel-panel--dark {
-  background: var(--color-gb-darkest);
-  color: var(--color-gb-light);
+  background: var(--color-ink);
+  color: var(--color-paper);
   box-shadow:
-    0 -4px 0 0 var(--color-gb-darkest),
-    0 4px 0 0 var(--color-gb-darkest),
-    -4px 0 0 0 var(--color-gb-darkest),
-    4px 0 0 0 var(--color-gb-darkest),
-    inset 0 0 0 2px var(--color-gb-light);
+    0 -4px 0 0 var(--color-ink),
+    0 4px 0 0 var(--color-ink),
+    -4px 0 0 0 var(--color-ink),
+    4px 0 0 0 var(--color-ink),
+    inset 0 0 0 2px var(--color-paper);
 }
 
-/* dot-matrix LCD texture for the screen surface */
-.lcd {
-  background-color: var(--color-gb-light);
+/* soft dot-grid texture on the cream screen surface */
+.screen {
+  background-color: var(--color-paper);
   background-image:
-    linear-gradient(rgba(15, 56, 15, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15, 56, 15, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(58, 53, 82, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(58, 53, 82, 0.05) 1px, transparent 1px);
   background-size: 4px 4px;
   image-rendering: pixelated;
 }
@@ -70,7 +73,7 @@ body {
   font-family: var(--font-pixel), monospace;
 }
 
-/* blinking ▼ continue-cursor from the battle dialogs */
+/* blinking ▼ continue-cursor from the dialog boxes */
 @keyframes blink-cursor {
   0%, 49% { opacity: 1; }
   50%, 100% { opacity: 0; }
@@ -81,8 +84,8 @@ body {
 
 /* power LED glow */
 @keyframes led-breathe {
-  0%, 100% { box-shadow: 0 0 6px 1px rgba(214, 40, 40, 0.8); }
-  50% { box-shadow: 0 0 10px 3px rgba(214, 40, 40, 0.45); }
+  0%, 100% { box-shadow: 0 0 6px 1px rgba(80, 200, 120, 0.8); }
+  50% { box-shadow: 0 0 10px 3px rgba(80, 200, 120, 0.45); }
 }
 .led {
   animation: led-breathe 2.4s ease-in-out infinite;
@@ -104,6 +107,6 @@ svg {
 }
 
 ::selection {
-  background: var(--color-gb-darkest);
-  color: var(--color-gb-light);
+  background: var(--color-ink);
+  color: var(--color-paper);
 }

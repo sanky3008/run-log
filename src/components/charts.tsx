@@ -1,8 +1,8 @@
 /* Server-rendered SVG charts in the four-shade LCD style.
    Stepped lines, square markers, crispEdges — no client JS. */
 
-const DARK = "var(--color-gb-darkest)";
-const MID = "var(--color-gb-dark)";
+const DARK = "var(--color-ink)";
+const MID = "var(--color-ink-soft)";
 
 interface Point {
   x: number;
@@ -93,7 +93,7 @@ export function PixelBars({
         const y = height - PAD.b - h;
         return (
           <g key={i}>
-            <rect x={x} y={y} width={bw} height={h} fill={i === values.length - 1 ? DARK : MID} />
+            <rect x={x} y={y} width={bw} height={h} fill={i === values.length - 1 ? "var(--color-red)" : "var(--color-blue)"} />
             <text x={x + bw / 2} y={y - 5} fontSize={11} fill={DARK} textAnchor="middle" fontFamily="var(--font-vt323)">
               {formatV(v)}
             </text>
@@ -109,9 +109,10 @@ export function PixelBars({
 
 export function ScatterPlot({
   points,
-  height = 200,
+  height = 220,
   xLabel,
   yLabel,
+  xDomain,
   formatX = (v: number) => v.toFixed(0),
   formatY = (v: number) => v.toFixed(0),
 }: {
@@ -119,34 +120,64 @@ export function ScatterPlot({
   height?: number;
   xLabel: string;
   yLabel: string;
+  xDomain?: [number, number]; // fixed axis range, e.g. [0, 100] for recovery
   formatX?: (v: number) => string;
   formatY?: (v: number) => string;
 }) {
   if (points.length === 0) return <Empty />;
   const W = 640;
-  const PAD = { l: 52, r: 12, t: 12, b: 34 };
+  const PAD = { l: 64, r: 16, t: 28, b: 36 };
   const xs = points.map((p) => p.x);
   const ys = points.map((p) => p.y);
-  const sx = scale(xs, Math.min(...xs), Math.max(...xs), PAD.l, W - PAD.r);
-  const sy = scale(ys, Math.min(...ys), Math.max(...ys), height - PAD.b, PAD.t);
+  const [xMin, xMax] = xDomain ?? padded(Math.min(...xs), Math.max(...xs));
+  const [yMin, yMax] = padded(Math.min(...ys), Math.max(...ys));
+  const sx = scale(xs, xMin, xMax, PAD.l, W - PAD.r);
+  const sy = scale(ys, yMin, yMax, height - PAD.b, PAD.t);
+
+  const xTicks = [0, 0.25, 0.5, 0.75, 1].map((f) => xMin + f * (xMax - xMin));
+  const yTicks = [0, 0.5, 1].map((f) => yMin + f * (yMax - yMin));
 
   return (
     <svg viewBox={`0 0 ${W} ${height}`} className="w-full" role="img">
-      <line x1={PAD.l} y1={height - PAD.b} x2={W - PAD.r} y2={height - PAD.b} stroke={MID} strokeWidth={2} />
-      <line x1={PAD.l} y1={PAD.t} x2={PAD.l} y2={height - PAD.b} stroke={MID} strokeWidth={2} />
+      {/* dotted grid */}
+      {xTicks.map((t, i) => (
+        <line key={`x${i}`} x1={sx(t)} y1={PAD.t} x2={sx(t)} y2={height - PAD.b} stroke={MID} strokeWidth={1} strokeDasharray="1 4" />
+      ))}
+      {yTicks.map((t, i) => (
+        <line key={`y${i}`} x1={PAD.l} y1={sy(t)} x2={W - PAD.r} y2={sy(t)} stroke={MID} strokeWidth={1} strokeDasharray="1 4" />
+      ))}
+      {/* axes */}
+      <line x1={PAD.l} y1={height - PAD.b} x2={W - PAD.r} y2={height - PAD.b} stroke={DARK} strokeWidth={2} />
+      <line x1={PAD.l} y1={PAD.t} x2={PAD.l} y2={height - PAD.b} stroke={DARK} strokeWidth={2} />
+      {/* tick labels */}
+      {xTicks.map((t, i) => (
+        <text key={`xl${i}`} x={sx(t)} y={height - PAD.b + 14} fontSize={12} fill={MID} textAnchor="middle" fontFamily="var(--font-vt323)">
+          {formatX(t)}
+        </text>
+      ))}
+      {yTicks.map((t, i) => (
+        <text key={`yl${i}`} x={PAD.l - 6} y={sy(t) + 4} fontSize={12} fill={MID} textAnchor="end" fontFamily="var(--font-vt323)">
+          {formatY(t)}
+        </text>
+      ))}
       {points.map((p, i) => (
         <rect key={i} x={sx(p.x) - 4} y={sy(p.y) - 4} width={8} height={8} fill={p.color ?? DARK} stroke={DARK} strokeWidth={1} />
       ))}
-      <text x={(PAD.l + W - PAD.r) / 2} y={height - 4} fontSize={12} fill={DARK} textAnchor="middle" fontFamily="var(--font-vt323)">
-        {xLabel} ({formatX(Math.min(...xs))} → {formatX(Math.max(...xs))})
+      <text x={(PAD.l + W - PAD.r) / 2} y={height - 2} fontSize={12} fill={DARK} textAnchor="middle" fontFamily="var(--font-vt323)">
+        {xLabel}
       </text>
-      <text x={12} y={PAD.t + 2} fontSize={12} fill={DARK} fontFamily="var(--font-vt323)">
-        {yLabel} ({formatY(Math.max(...ys))} top, {formatY(Math.min(...ys))} bottom)
+      <text x={14} y={12} fontSize={12} fill={DARK} fontFamily="var(--font-vt323)">
+        {yLabel}
       </text>
     </svg>
   );
 }
 
+function padded(min: number, max: number): [number, number] {
+  const span = max - min || Math.abs(max) || 1;
+  return [min - span * 0.15, max + span * 0.15];
+}
+
 function Empty() {
-  return <p className="text-gb-dark py-6 text-center">Not enough data yet…</p>;
+  return <p className="text-ink-soft py-6 text-center">Not enough data yet…</p>;
 }

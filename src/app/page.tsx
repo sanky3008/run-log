@@ -11,10 +11,10 @@ export default async function HomePage() {
     return (
       <div className="pixel-panel p-6 text-center pop">
         <p className="font-pixel text-[11px] leading-relaxed">
-          No wild RUNs encountered yet!
+          No runs logged yet!
         </p>
-        <p className="mt-2 text-xl text-gb-dark">
-          Lace up — the tall grass awaits. New runs sync here automatically from Whoop.
+        <p className="mt-2 text-xl text-ink-soft">
+          New runs sync here automatically from Whoop.
         </p>
       </div>
     );
@@ -42,10 +42,10 @@ export default async function HomePage() {
         weekProgress={avgWeekKm > 0 ? Math.min(1, (thisWeek?.km ?? 0) / avgWeekKm) : 0}
       />
 
-      <EncounterCard ctx={latest} />
+      <EncounterCard ctx={latest} heading="LATEST RUN" />
 
       <section className="pixel-panel p-3 pop pop-3">
-        <h3 className="font-pixel text-[10px] px-2 pb-2 border-b-2 border-gb-darkest">
+        <h3 className="font-pixel text-[10px] px-2 pb-2 border-b-2 border-ink">
           RUN JOURNAL
         </h3>
         <div className="mt-1 max-h-[28rem] overflow-y-auto">
