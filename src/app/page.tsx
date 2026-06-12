@@ -1,6 +1,7 @@
 import { getRuns, getAllContext, joinContext, weeklySummaries, isoWeek } from "@/lib/analytics";
 import { computeBadges, trainerLevel } from "@/lib/badges";
 import { EncounterCard, RunListItem, TrainerCard } from "@/components/cards";
+import { RefreshButton } from "@/components/refresh-button";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,9 @@ export default async function HomePage() {
         <p className="mt-2 text-xl text-ink-soft">
           New runs sync here automatically from Whoop.
         </p>
+        <div className="mt-4 flex justify-center">
+          <RefreshButton />
+        </div>
       </div>
     );
   }
@@ -45,9 +49,10 @@ export default async function HomePage() {
       <EncounterCard ctx={latest} heading="LATEST RUN" />
 
       <section className="pixel-panel p-3 pop pop-3">
-        <h3 className="font-pixel text-[10px] px-2 pb-2 border-b-2 border-ink">
-          RUN JOURNAL
-        </h3>
+        <div className="flex items-center justify-between gap-2 px-2 pb-2 border-b-2 border-ink">
+          <h3 className="font-pixel text-[10px] shrink-0">RUN JOURNAL</h3>
+          <RefreshButton />
+        </div>
         <div className="mt-1 max-h-[28rem] overflow-y-auto">
           {runs.slice(0, 30).map((run) => (
             <RunListItem key={run.id} run={run} />
