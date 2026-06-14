@@ -49,8 +49,8 @@ export default async function HomePage() {
       <EncounterCard ctx={latest} heading="LATEST RUN" />
 
       <section className="pixel-panel p-3 pop pop-3">
-        <div className="flex items-center justify-between gap-2 px-2 pb-2 border-b-2 border-ink">
-          <h3 className="font-pixel text-[10px] shrink-0">RUN JOURNAL</h3>
+        <div className="flex flex-col gap-2 px-2 pb-2 border-b-2 border-ink sm:flex-row sm:items-center sm:justify-between">
+          <h3 className="font-pixel text-[10px]">RUN JOURNAL</h3>
           <RefreshButton />
         </div>
         <div className="mt-1 max-h-[28rem] overflow-y-auto">

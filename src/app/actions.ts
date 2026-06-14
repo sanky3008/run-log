@@ -35,10 +35,15 @@ export async function refreshRuns(): Promise<RefreshState> {
     };
   } catch (err) {
     console.error("manual refresh failed", err);
+    const raw = err instanceof Error ? err.message : String(err);
+    // A dead/expired Whoop token is the usual culprit and needs a re-link,
+    // not a retry — call that out instead of showing a raw stack message.
+    const authIssue = /authoriz|token|\b401\b/i.test(raw);
     return {
       ok: false,
-      message:
-        err instanceof Error ? err.message : "Sync failed — please try again.",
+      message: authIssue
+        ? "Whoop authorization expired — re-link Whoop at /api/auth/whoop, then try again."
+        : `Sync failed: ${raw}`,
       at: Date.now(),
     };
   }

@@ -1,24 +1,24 @@
 "use client";
 
-import { startTransition, useActionState } from "react";
+import { startTransition, useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { refreshRuns, type RefreshState } from "@/app/actions";
 
 export function RefreshButton() {
+  const router = useRouter();
   const [state, action, pending] = useActionState<RefreshState | null>(
     refreshRuns,
     null,
   );
 
+  // revalidatePath refreshes the server cache; router.refresh() makes sure the
+  // page we're looking at re-renders with the newly synced runs.
+  useEffect(() => {
+    if (state?.ok) router.refresh();
+  }, [state, router]);
+
   return (
-    <div className="flex min-w-0 items-center justify-end gap-2">
-      {state && !pending && (
-        <span
-          title={state.message}
-          className={`truncate text-base ${state.ok ? "text-ink-soft" : "text-red"}`}
-        >
-          {state.message}
-        </span>
-      )}
+    <div className="flex flex-col items-end gap-1">
       <button
         type="button"
         onClick={() => startTransition(action)}
@@ -28,6 +28,15 @@ export function RefreshButton() {
       >
         {pending ? "SYNCING…" : "▶ FETCH NEW RUNS"}
       </button>
+      {state && !pending && (
+        <span
+          className={`max-w-[20rem] text-right text-base leading-snug ${
+            state.ok ? "text-ink-soft" : "text-red"
+          }`}
+        >
+          {state.message}
+        </span>
+      )}
     </div>
   );
 }
